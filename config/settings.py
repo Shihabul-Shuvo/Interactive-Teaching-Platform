@@ -11,11 +11,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-+jjlcxiie3sl0ik6ev=qlju&^1%(*y9r!=t!=m)c=_7o*ja20e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Parse ALLOWED_HOSTS from environment variable (comma-separated)
 # For PythonAnywhere: add your-username.pythonanywhere.com
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,.pythonanywhere.com').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,shovo75.pythonanywhere.com').split(',')
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]
 
 
@@ -51,6 +51,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:8000",
+    "https://shovo75.pythonanywhere.com",
 ]
 
 REST_FRAMEWORK = {
@@ -88,15 +89,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-# Support both SQLite (development) and PostgreSQL (production/Heroku)
-
-import dj_database_url
+# SQLite for PythonAnywhere (simple and efficient)
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -151,10 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
     # HTTPS and Security Headers
-    # Only force HTTPS on production (PythonAnywhere, not local)
-    if 'pythonanywhere.com' in ALLOWED_HOSTS or os.getenv('ENVIRONMENT') == 'production':
-        SECURE_SSL_REDIRECT = True
-    
+    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
