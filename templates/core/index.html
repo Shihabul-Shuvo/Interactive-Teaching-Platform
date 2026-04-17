@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Interactive Teaching Platform - Articles{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-indigo-700 via-indigo-600 to-blue-600 text-white py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-4">Interactive Teaching Platform</h1>
+        <p class="text-xl md:text-2xl text-indigo-100">Explore engaging multimedia content and interactive learning materials</p>
+    </div>
+</div>
+
+<!-- Articles Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-4xl font-bold text-gray-900 mb-12">Available Articles</h2>
+    
+    {% if articles %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for article in articles %}
+        <div class="group bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-l-4 border-indigo-600 hover:border-indigo-700">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition">{{ article.title }}</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    <i class="fas fa-calendar mr-2"></i>{{ article.created_at|date:"F d, Y" }}
+                </p>
+                {% if article.sections.all %}
+                <p class="text-sm text-green-600 mb-6">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ article.sections.count }} section{{ article.sections.count|pluralize }}
+                </p>
+                {% endif %}
+            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <a href="{% url 'core:article-detail' article.slug %}" class="inline-flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-700 transition">
+                    Read Article
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-blue-50 border-l-4 border-blue-600 p-6 rounded">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+            <p class="text-gray-700">No articles available yet. Please check back later.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

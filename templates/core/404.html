@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h1 class="display-1">404</h1>
+            <h2>Page Not Found</h2>
+            <p class="lead">The article you're looking for doesn't exist or has been removed.</p>
+            <a href="{% url 'core:index' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

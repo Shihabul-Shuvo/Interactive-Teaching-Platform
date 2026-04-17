@@ -1,0 +1,14 @@
+Django==5.0.4
+djangorestframework==3.15.1
+django-cors-headers==4.3.1
+Pillow==10.3.0           # For ImageField
+python-dotenv==1.0.1
+djangorestframework-simplejwt==5.3.2  # JWT Authentication
+drf-spectacular==0.27.2                # OpenAPI/Swagger Documentation
+django-filter==24.1                    # Advanced filtering for API
+django-redis==5.4.0                    # Redis caching
+pytest-django==4.7.0                   # Testing framework
+factory-boy==3.3.0                     # Test fixtures
+gunicorn==21.2.0                       # Production WSGI server
+whitenoise==6.6.0                      # Static files serving
+psycopg2-binary==2.9.9                 # PostgreSQL database adapter (optional, for production)
