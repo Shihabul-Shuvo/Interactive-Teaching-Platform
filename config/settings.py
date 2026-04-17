@@ -14,7 +14,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-+jjlcxiie3sl0ik6ev=qlju&^1
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # Parse ALLOWED_HOSTS from environment variable (comma-separated)
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# For PythonAnywhere: add your-username.pythonanywhere.com
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,.pythonanywhere.com').split(',')
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]
 
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files efficiently
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -149,7 +151,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
     # HTTPS and Security Headers
-    SECURE_SSL_REDIRECT = True
+    # Only force HTTPS on production (PythonAnywhere, not local)
+    if 'pythonanywhere.com' in ALLOWED_HOSTS or os.getenv('ENVIRONMENT') == 'production':
+        SECURE_SSL_REDIRECT = True
+    
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
@@ -170,8 +175,4 @@ if not DEBUG:
 # Static files for production with WhiteNoise
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Middleware for WhiteNoise (serve static files)
-if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
