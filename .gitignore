@@ -49,6 +49,14 @@ db.sqlite3-journal
 .env
 .env.local
 
+# Deployment configuration files
+Procfile
+runtime.txt
+.env.example
+HEROKU_DEPLOY.md
+QUICK_HEROKU_START.md
+DEPLOYMENT_SETUP.md
+
 # Testing
 .coverage
 htmlcov/

@@ -1,12 +1,21 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-+jjlcxiie3sl0ik6ev=qlju&^1%(*y9r!=t!=m)c=_7o*ja20e'
+# Security settings - use environment variables
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-+jjlcxiie3sl0ik6ev=qlju&^1%(*y9r!=t!=m)c=_7o*ja20e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
+# Parse ALLOWED_HOSTS from environment variable (comma-separated)
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]
 
 
 # Application definition
@@ -77,12 +86,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# Support both SQLite (development) and PostgreSQL (production/Heroku)
+
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600,
+    )
 }
 
 
@@ -128,3 +140,38 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================================================
+# PRODUCTION SECURITY SETTINGS
+# ============================================================================
+# These settings activate automatically when DEBUG=False (production mode)
+
+if not DEBUG:
+    # HTTPS and Security Headers
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # HSTS (HTTP Strict Transport Security)
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Content Security Policy (optional - can be strict)
+    # SECURE_CONTENT_SECURITY_POLICY = {
+    #     "default-src": ("'self'",),
+    #     "script-src": ("'self'", "'unsafe-inline'"),
+    #     "style-src": ("'self'", "'unsafe-inline'"),
+    # }
+
+# Static files for production with WhiteNoise
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Middleware for WhiteNoise (serve static files)
+if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+

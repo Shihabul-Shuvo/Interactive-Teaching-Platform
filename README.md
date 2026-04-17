@@ -2,7 +2,7 @@
 
 A professional-grade Django 5.2.7 web application for multimedia-rich interactive learning. This platform demonstrates full-stack web development with modern best practices including REST API design, responsive UI/UX, database optimization, and comprehensive content management.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Architecture](#architecture)
@@ -12,6 +12,7 @@ A professional-grade Django 5.2.7 web application for multimedia-rich interactiv
 - [Database Schema](#database-schema)
 - [API Documentation](#api-documentation)
 - [Key Implementation Details](#key-implementation-details)
+- [Deployment Guide](#deployment-guide)
 - [Troubleshooting Guide](#troubleshooting-guide)
 - [Performance Optimization](#performance-optimization)
 - [Future Enhancements](#future-enhancements)
@@ -22,7 +23,7 @@ A professional-grade Django 5.2.7 web application for multimedia-rich interactiv
 
 ### Purpose and Design
 
-The Interactive Teaching Platform is engineered to bridge the gap between traditional content delivery and interactive learning experiences. Built with Django and modern frontend technologies, it provides:
+The Interactive Teaching Platform connects traditional content delivery with interactive learning experiences. Built with Django and modern frontend technologies, it provides:
 
 - **Content Creators**: Intuitive admin interface with slug auto-generation, rich-text editing, and multimedia management
 - **Learners**: Responsive interface with interactive terms, expandable sections, and multimedia content discovery
@@ -30,19 +31,19 @@ The Interactive Teaching Platform is engineered to bridge the gap between tradit
 
 ### Core Capabilities
 
-✨ **Content Management**
+**Content Management**
 - Dynamic article creation with auto-generated SEO-friendly slugs
 - Interactive term linking to multimedia content
 - Structured sections (introduction, detailed explanation, resources)
 - Multi-language support (demonstrated with Bengali content)
 
-🎯 **Interactive Features**
+**Interactive Features**
 - Clickable terms with dotted underline styling
 - Modal-based multimedia content display (images, videos, audio, text)
 - Expandable accordion sections with smooth CSS transitions
 - Real-time interaction analytics tracking
 
-📱 **Responsive Design**
+**Responsive Design**
 - Mobile-first Tailwind CSS approach
 - Desktop, tablet, and mobile optimization
 - Touch-friendly interface elements
@@ -916,9 +917,131 @@ class ArticleAdmin(admin.ModelAdmin):
 **Key Design Decision**: Remove slug from main fieldset entirely. Show it in collapsed metadata section for reference only.
 
 **Alternative Approaches Considered**:
-1. ❌ Make slug optional in form: Still shows in fieldset, confusing UX
-2. ❌ Override form.__init__: Hacky, hard to maintain
-3. ✅ Remove from fieldset + readonly_fields: Clean, clear intent
+1. Make slug optional in form: Still shows in fieldset, confusing UX
+2. Override form.__init__: Hacky, hard to maintain
+3. Remove from fieldset + readonly_fields: Clean, clear intent
+
+---
+
+## Deployment Guide
+
+### Quick Start: Deploy to Heroku (Free Tier)
+
+The Interactive Teaching Platform is ready for production deployment. This project includes:
+
+**Deployment Files:**
+- `Procfile` - Tells Heroku how to run your app
+- `runtime.txt` - Specifies Python 3.11.0
+- `.env.example` - Template for environment variables
+- `Procfile` runs: `gunicorn config.wsgi:application` (production server)
+
+**For Complete Heroku Deployment Instructions:**
+
+👉 **[See HEROKU_DEPLOY.md](./HEROKU_DEPLOY.md)** - Complete beginner-friendly guide with:
+- Free Heroku account setup
+- Heroku CLI installation
+- 11-step deployment process
+- Database configuration
+- Common troubleshooting
+- Custom domain setup
+
+**Quick Heroku Deployment (Summary):**
+
+```bash
+# 1. Login to Heroku
+heroku login
+
+# 2. Create app
+heroku create your-app-name-123
+
+# 3. Add free PostgreSQL database
+heroku addons:create heroku-postgresql:mini
+
+# 4. Set environment variables
+heroku config:set SECRET_KEY=your-secret-key-here
+heroku config:set DEBUG=False
+heroku config:set ALLOWED_HOSTS=your-app-name-123.herokuapp.com
+
+# 5. Deploy your code
+git push heroku main
+
+# 6. Run migrations
+heroku run python manage.py migrate
+
+# 7. Create admin user
+heroku run python manage.py createsuperuser
+
+# 8. Open your app
+heroku open
+```
+
+**Your app will be live at:** `https://your-app-name-123.herokuapp.com/`
+
+### About conftest.py and pytest.ini
+
+These files are for **testing only** and are NOT needed for deployment:
+
+- `conftest.py` - pytest configuration for unit/integration tests
+- `pytest.ini` - pytest settings for test execution
+
+**You can safely:**
+- Keep them for development and testing
+- Ignore them during deployment
+- Delete them if you don't plan to write tests
+
+They are already excluded from Heroku deployment via `.gitignore` if needed.
+
+### Environment Variables
+
+The app uses environment variables for configuration. These are set automatically by Heroku:
+
+**Automatically Set by Heroku:**
+- `DATABASE_URL` - PostgreSQL connection string
+- `PORT` - Port to run on (usually 5000)
+
+**You Must Set:**
+```bash
+heroku config:set DEBUG=False
+heroku config:set SECRET_KEY=your-secure-random-string
+heroku config:set ALLOWED_HOSTS=your-app-name.herokuapp.com,www.your-app-name.herokuapp.com
+```
+
+**Optional:**
+```bash
+heroku config:set EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+heroku config:set EMAIL_HOST=smtp.gmail.com
+heroku config:set EMAIL_PORT=587
+heroku config:set EMAIL_USE_TLS=True
+heroku config:set EMAIL_HOST_USER=your-email@gmail.com
+heroku config:set EMAIL_HOST_PASSWORD=your-app-password
+```
+
+### Production Checklist
+
+Before deploying:
+
+- [ ] Updated `config/settings.py` (done)
+- [ ] Added `Procfile` (done)
+- [ ] Added `runtime.txt` (done)
+- [ ] Updated `requirements.txt` with gunicorn, whitenoise, dj-database-url (done)
+- [ ] Created `.env.example` (done)
+- [ ] `.env` is in `.gitignore` (done)
+- [ ] Have Heroku account (create free at heroku.com)
+- [ ] Have Heroku CLI installed
+- [ ] Have Git initialized in project
+- [ ] Code committed to Git
+
+### Other Deployment Options
+
+Besides Heroku, you can also deploy to:
+
+1. **PythonAnywhere** - Easy, beginner-friendly (pythonanywhere.com)
+2. **AWS EC2** - Full control, scalable (aws.amazon.com)
+3. **DigitalOcean** - Affordable VPS (digitalocean.com)
+4. **Railway** - Similar to Heroku (railway.app)
+5. **Render** - Modern deployment platform (render.com)
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions on these platforms.
 
 ---
 
@@ -3445,7 +3568,7 @@ Interactive Teaching Platform/
 
 ### Version 1.0 (Current)
 
-✅ **Core Features:**
+**Core Features:**
 - Article creation and management
 - Section accordion interface
 - Multimedia content support (text, images, audio, video, YouTube)
@@ -3456,7 +3579,7 @@ Interactive Teaching Platform/
 - Responsive design (Tailwind CSS)
 - Authentication system
 
-✅ **API Features:**
+**API Features:**
 - Article listing and detail views
 - Section management
 - Media item handling
@@ -3466,7 +3589,7 @@ Interactive Teaching Platform/
 
 ### Version 2.0 (Future)
 
-📋 **Planned Features:**
+**Planned Features:**
 
 **User Experience:**
 - [ ] User accounts and profiles
